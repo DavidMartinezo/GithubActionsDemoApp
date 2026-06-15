@@ -1,0 +1,26 @@
+name: DeployDemo
+on: workflow_dispatch
+env:
+ DOTNET_VERSION: 8.0.x
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting the project
+        uses: actions/checkout@v6.0.3
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v5.3.0
+        with:
+          dotnet-version: ${{env.DOTNET_VERSION}}
+
+      - name: Getting Dependencies 
+        run: dotnet restore
+
+      - name: compile
+        run: dotnet build --no-restore
+
+        
+        
+        
+      
+  
