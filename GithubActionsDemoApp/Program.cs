@@ -1,4 +1,4 @@
-using GithubActionsDemoApp;
+using GithubActionsDemoAp;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
