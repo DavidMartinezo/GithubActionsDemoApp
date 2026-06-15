@@ -1,4 +1,4 @@
-name: DeployDemo
+name: DeployProject
 on: workflow_dispatch
 env:
  DOTNET_VERSION: 8.0.x
