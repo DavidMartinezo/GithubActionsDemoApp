@@ -32,3 +32,6 @@ jobs:
 
       - name: Compile
         run: dotnet build --no-restore
+        #no need to build the test becuase it was previously built 
+      - name: Run test 
+        run: dotnet test --no-biuld
