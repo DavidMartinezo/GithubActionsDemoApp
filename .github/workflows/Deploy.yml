@@ -10,6 +10,8 @@ on:
       - ".github/workflows/deploy.yml"
       - "GithubActionsDemoApp/**"
       - "Test/**"
+    tags:
+      - '*' #runs under any tag
 
 env:
   DOTNET_VERSION: 8.0.x
@@ -51,10 +53,12 @@ jobs:
           path: ./myapp
           name: build
       - name: Zip
+        if: startsWith(github.ref, 'refs/tags/')
         run: zip -r myapp.zip ./myapp
         #using gh release
       - name: Gh Release        
         uses: softprops/action-gh-release@v3.0.0
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ./myapp.zip
           body: "Our app"
