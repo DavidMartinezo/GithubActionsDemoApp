@@ -17,6 +17,10 @@ env:
 
 jobs:
   build:
+    #allowing the repo to save 
+    permissions:
+      contents: write
+  
     runs-on: ubuntu-latest
 
     steps:
@@ -46,4 +50,12 @@ jobs:
 
           path: ./myapp
           name: build
-          
+      - name: Zip
+        run: zip -r myapp.zip ./myapp
+        #using gh release
+      - name: Gh Release        
+        uses: softprops/action-gh-release@v3.0.0
+        with:
+          files: ./myapp.zip
+          body: "Our app"
+          tag_name: ${{ github.ref_name }}
