@@ -53,7 +53,7 @@ jobs:
         run: dotnet publish ${{env.PROJECT}} -c Release -o myapp --runtime win-x86
         
       - name: genetate the migration script 
-        run: dotnet ef migrations scripts -i -o migrations.sql --project ${{env.PROJECT}}
+        run: dotnet ef migrations script -i -o migrations.sql --project ${{env.PROJECT}}
 
         
       - name: Upload a Build Artifact
