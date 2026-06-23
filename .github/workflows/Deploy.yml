@@ -37,6 +37,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Instaling EF Core
+        run: dotnet tool install --global dotnet-ef
 
       - name: Restore dependencies
         run: dotnet restore
@@ -49,12 +51,24 @@ jobs:
         #getting the artifacts 
       - name: Publish
         run: dotnet publish ${{env.PROJECT}} -c Release -o myapp --runtime win-x86
+        
+      - name: genetate the migration script 
+        run: dotnet ef migrations scripts -1 -o migrations.sql --project ${{env.PROJECT}}
 
+        
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v7.0.1
         with:
           path: ./myapp
           name: build
+
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          path: migrations.sql
+          name: migrations
+          
       - name: Zip
         if: startsWith(github.ref, 'refs/tags/')
         run: zip -r myapp.zip ./myapp
@@ -78,10 +92,22 @@ jobs:
      - name: Getting the web app artifacts
        uses: actions/download-artifact@v4
        with:
+         name: migrations #referencing the migrations name
+
+     - name: Getting the migrations artifacts
+       uses: actions/download-artifact@v4
+       with:
          name: build #referencing the build in the name: Upload a Build Artifact
+         
      - name: Deploy to Azure using Azure webapp   
        uses: Azure/webapps-deploy@v3
        with: 
          app-name: ${{env.AZURE_APP_SERVICE_NAME}}
          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
          package: ${{env.AZURE_APP_SERVICE_PACKAGE_LOCATION }}
+         
+     - name: Azure SQL Deployment
+       uses: Azure/sql-action@v2.2.1
+       with: 
+          connection-string: ${{secrets.CONNECTION_STRING}}
+          path: ./migrations.sql
